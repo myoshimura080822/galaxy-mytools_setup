@@ -9,7 +9,7 @@ from bioblend.galaxy.toolshed import ToolShedClient
 from bioblend.toolshed import ToolShedInstance
 print "python :" + sys.version
 
-print u"install_wf_tools.py Started......"
+print u"install_toolshed_tools.py Started......"
 
 #============== Galaxy in 172.18.70.161 ================
 GALAXY_URL = 'http://127.0.0.1:8080/'

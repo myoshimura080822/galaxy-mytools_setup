@@ -35,18 +35,18 @@ def main():
         print wf_namelist
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> clone BiT Tools from github...'
-        if not os.path.exists(wf_dname + '/galaxy-workflow-rnaseq'):
+        if not os.path.exists(wf_dname + '/galaxy-workflow_rnaseq'):
             os.chdir(wf_dname)
-            git_url = 'https://github.com/myoshimura080822/galaxy-workflow-rnaseq.git'
-            Repo.clone_from(git_url, 'galaxy-workflow-rnaseq')
+            git_url = 'https://github.com/myoshimura080822/galaxy-workflow_rnaseq.git'
+            Repo.clone_from(git_url, 'galaxy-workflow_rnaseq')
         else:
-            print 'BiT Workflow already cloned. To update, Please delete, move or rename "/galaxy-workflow-rnaseq" before script execute.'
+            print 'BiT Workflow already cloned. To update, Please delete, move or rename "/galaxy-workflow_rnaseq" before script execute.'
             #return 0
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> delete and inport workflow files...'
 
-        mytoolsdir = wf_dname + '/galaxy-workflow-rnaseq/'
+        mytoolsdir = wf_dname + '/galaxy-workflow_rnaseq/'
         clone_wf_list = [file.replace(mytoolsdir, "") for file in get_all_ga(mytoolsdir)]
         print clone_wf_list
         delete_itm =[]
