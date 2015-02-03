@@ -232,30 +232,6 @@ def main():
             add_tool_data_table_conf(tree)
         else:
             print 'sailfish index-node already created.'
-"""
-        print ':::::::::::::::::::::::::::::::::::::::::::'
-        print '>>>>>>>>>>>>>>>>> clone sailfish tool from git...'
-        if not os.path.isfile(tool_dname + '/sailfish_custom/Sailfish_custom.xml'):
-            os.chdir(tool_dname)
-            git_url = 'https://github.com/myoshimura080822/galaxy-mytools_sailfish.git'
-            Repo.clone_from(git_url, 'sailfish_custom')
-        else:
-            print 'sailfish-tool already cloned.'
-
-        print ':::::::::::::::::::::::::::::::::::::::::::'
-        print '>>>>>>>>>>>>>>>>> add sailfish tool-node to tool_conf.xml...'
-
-        os.chdir(dist_dname)
-        tool_tree = ET.parse('tool_conf.xml')
-        sailfish_tool = 0
-        for e in tool_tree.getiterator():
-            if e.get('file') == 'sailfish_custom/Sailfish_custom.xml':
-                sailfish_tool = 1
-        if sailfish_tool == 0:
-            add_tool_conf(tool_tree)
-        else:
-            print 'sailfish tool-node already created.'
-"""
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> script ended :)'
