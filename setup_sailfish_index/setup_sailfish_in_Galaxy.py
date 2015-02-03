@@ -146,7 +146,7 @@ def create_loc_file(index_list):
         index_dir = out_dname + '/' + index_id
         str_loc = '%s : %s : %s : %s' % (index_id,index_id,index_name,index_dir)
         print str_loc
-   :     f.write('%s\t%s\t%s\t%s\n' % (index_id,index_id,index_name,index_dir))
+        f.write('%s\t%s\t%s\t%s\n' % (index_id,index_id,index_name,index_dir))
     f.close()
 
 def add_tool_data_table_conf(tree):
