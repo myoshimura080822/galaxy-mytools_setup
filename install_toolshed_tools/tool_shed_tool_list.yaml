@@ -1,0 +1,60 @@
+# >>>sample<<<
+# api_key: <Admin user API key from galaxy_instance>
+# galaxy_instance: <Galaxy instance IP>
+# tools:
+# - name: synapse_interface
+#   owner: kellrott
+#   tool_panel_section_id: peak_calling
+#   tool_shed_url: http://testtoolshed.g2.bx.psu.edu
+# - name: venn_list
+#   owner: peterjc
+#   tool_panel_section_id: peak_calling
+#   tool_shed_url: http://testtoolshed.g2.bx.psu.edu
+
+api_key: 89adc190acb206b4544cef3d427e3351
+galaxy_instance: 172.18.70.161
+
+tools:
+- name: tophat2
+  owner: devteam
+  tool_panel_section_id: ngs-rna-tools
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: da1f39fe14bc
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+- name: express
+  owner: devteam
+  tool_panel_section_id: ngs-rna-tools
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: 7b0708761d05
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+- name: edger
+  owner: devteam
+  tool_panel_section_id: stats
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: 6324eefd9e91
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+- name: bowtie2
+  owner: devteam
+  tool_panel_section_id: solexa_tools
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: a54de7e658f7
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+- name: fastq_mcf
+  owner: devteam
+  tool_panel_section_id: NGS_QC
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: b61f1466ce8f
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+- name: fastqc
+  owner: devteam
+  tool_panel_section_id: NGS_QC
+  tool_shed_url: http://toolshed.g2.bx.psu.edu
+  revision: 0b201de108b9
+  install_tool_dependencies: True
+  install_repository_dependencies: True
+
