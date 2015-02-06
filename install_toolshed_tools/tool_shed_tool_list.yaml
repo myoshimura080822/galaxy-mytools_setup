@@ -40,7 +40,7 @@ tools:
   owner: devteam
   tool_panel_section_id: solexa_tools
   tool_shed_url: http://toolshed.g2.bx.psu.edu
-  revision: a54de7e658f7
+  revision: c1ec08cb34f9
   install_tool_dependencies: True
   install_repository_dependencies: True
 - name: fastq_mcf
