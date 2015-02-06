@@ -8,18 +8,36 @@ from bioblend.galaxy.workflows import WorkflowClient
 
 print 'bit-workflow_install.py Started......'
 
-GALAXY_URL = 'http://127.0.0.1:8080/'
-API_KEY = '5192626488c47dab7a8747861f345a54'
+argvs = sys.argv
+argc = len(argvs)
 
-dist_dname = '/usr/local/galaxy4/galaxy-dist'
-wf_dname = '/usr/local/galaxy4/galaxy-dist/workflow_file'
+if (argc != 3):
+    print 'Usage: # python %s "<APY_KEY>" galaxy-username' % argvs[0]
+    quit()
+
+GALAXY_URL = 'http://127.0.0.1:8080/'
+API_KEY = argvs[1]
+print API_KEY
+
+homedir = '/usr/local/' + argvs[2]
+dist_dname = homedir + '/galaxy-dist'
+wf_dname = dist_dname + '/workflow_file'
 
 def get_all_ga(directory):
+    ret = []
     for root, dirs, files in os.walk(directory):
         for file in files:
             name, ext = os.path.splitext(file)
             if not '.git' in root and ext == '.ga':
-                yield os.path.join(root, file)
+                ret.append(os.path.join(root, file))
+    return ret
+
+def makeDir(dname):
+    if os.path.exists(dname) is False:
+        os.mkdir(dname)
+        print '%s (dir) created.' % dname
+    else:
+        print '%s (dir) is already exists.' % dname
 
 def main():
     try:
@@ -36,12 +54,13 @@ def main():
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> clone BiT Tools from github...'
         if not os.path.exists(wf_dname + '/galaxy-workflow_rnaseq'):
+            makeDir(wf_dname)
             os.chdir(wf_dname)
             git_url = 'https://github.com/myoshimura080822/galaxy-workflow_rnaseq.git'
             Repo.clone_from(git_url, 'galaxy-workflow_rnaseq')
         else:
             print 'BiT Workflow already cloned. To update, Please delete, move or rename "/galaxy-workflow_rnaseq" before script execute.'
-            #return 0
+            return 0
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> delete and inport workflow files...'

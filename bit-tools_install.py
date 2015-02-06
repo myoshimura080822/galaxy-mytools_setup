@@ -10,12 +10,13 @@ print 'install_bit-tools.py Started......'
 argvs = sys.argv
 argc = len(argvs)
 
-#if (argc != 2):
-#    print 'Usage: # python %s filename(tool_list)' % argvs[0]
-#    quit()
+if (argc != 2):
+    print 'Usage: # python %s galaxy-username' % argvs[0]
+    quit()
 
-dist_dname = '/usr/local/galaxy4/galaxy-dist'
-tool_dname = '/usr/local/galaxy4/galaxy-dist/tools'
+homedir = '/usr/local/' + argvs[1]
+dist_dname = homedir + '/galaxy-dist'
+tool_dname = dist_dname + '/tools'
 
 def read_input():
     f = open(argvs[1])

@@ -11,9 +11,17 @@ print "python :" + sys.version
 
 print u"install_toolshed_tools.py Started......"
 
+argvs = sys.argv
+argc = len(argvs)
+
+if (argc != 2):
+    print 'Usage: # python %s "<APY_KEY>"' % argvs[0]
+    quit()
+
 #============== Galaxy in 172.18.70.161 ================
 GALAXY_URL = 'http://127.0.0.1:8080/'
-API_KEY = '89adc190acb206b4544cef3d427e3351'
+API_KEY = argvs[1]
+print API_KEY
 
 def main():
     try:

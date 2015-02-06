@@ -24,16 +24,18 @@ print 'make_sailfish_index.py Started......'
 argvs = sys.argv
 argc = len(argvs)
 
-if (argc != 2):
-    print 'Usage: # python %s filename(index_list)' % argvs[0]
+if (argc != 3):
+    print 'Usage: # python %s filename(index_list) galaxy-username' % argvs[0]
     quit()
 
 logger = mp.log_to_stderr(logging.DEBUG)
 
-out_dname = '/usr/local/galaxy4/bit_tools/sailfish_index'
-loc_dname = '/usr/local/galaxy4/galaxy-dist/tool-data'
-dist_dname = '/usr/local/galaxy4/galaxy-dist'
-tool_dname = '/usr/local/galaxy4/galaxy-dist/tools'
+homedir = '/usr/local/' + argvs[2]
+bit_dname = homedir + '/bit_tools'
+out_dname = bit_dname + '/sailfish_index'
+dist_dname = homedir + '/galaxy-dist'
+loc_dname = dist_dname + '/tool-data'
+tool_dname = dist_dname + '/tools'
 
 def read_input():
     f = open(argvs[1])
@@ -177,7 +179,8 @@ def main():
         input_index_list = []
         input_index_list = read_input()
         print 'length of index_list: ' + str(len(input_index_list))
-
+        
+        makeDir(bit_dname)
         makeDir(out_dname)
         os.chdir(out_dname)
         print 'moved to %s' % os.getcwd()
