@@ -212,7 +212,7 @@ def main():
         if len(param_list) > 0:
             cmds = generate_cmds('sailfish index --force', ['-t', '-o', '--kmerSize'], param_list)
             pool = Pool(mp.cpu_count())
-            callback = pool.map_async(run_cmd, cmds).get(999)
+            callback = pool.map_async(run_cmd, cmds).get()
         else:
             print 'sailfish indexes already created.'
 
