@@ -30,7 +30,7 @@ tools:
   install_tool_dependencies: True
   install_repository_dependencies: True
 - name: edger
-  owner: devteam
+  owner: fcaramia
   tool_panel_section_id: stats
   tool_shed_url: http://toolshed.g2.bx.psu.edu
   revision: 6324eefd9e91
@@ -44,7 +44,7 @@ tools:
   install_tool_dependencies: True
   install_repository_dependencies: True
 - name: fastq_mcf
-  owner: devteam
+  owner: jjohnson
   tool_panel_section_id: NGS_QC
   tool_shed_url: http://toolshed.g2.bx.psu.edu
   revision: b61f1466ce8f
