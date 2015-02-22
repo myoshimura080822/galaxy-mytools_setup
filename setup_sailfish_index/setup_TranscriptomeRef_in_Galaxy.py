@@ -7,6 +7,9 @@ import time
 import grequests
 import itertools
 from itertools import product
+import subprocess
+from subprocess import check_call
+import ConfigParser
 print "python :" + sys.version
 
 argvs = sys.argv
@@ -20,6 +23,11 @@ if (argc != 3):
 
 homedir = '/usr/local/' + argvs[2]
 out_dname = homedir + '/transcriptome_ref'
+ini_file = homedir + '/galaxy-dist/universe_wsgi.ini'
+import_data_dir = homedir + '/import_data'
+
+def exception_handler(request, exception):
+    print "Request failed"
 
 def read_input():
     f = open(argvs[1])
@@ -41,6 +49,11 @@ def makeDir(dname):
     else:
         print '%s (dir) is already exists.' % dname
 
+def print_tree(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            yield os.path.join(root, file)
+
 def create_dl_list(ref_list):
     ret = []
     for item in ref_list:
@@ -48,7 +61,7 @@ def create_dl_list(ref_list):
         dl_path = item_list[1]
         dl_item = item_list[1].split('/')[-1]
         print 'downloading-file: ' + dl_path
-        if os.path.isfile(dl_item.replace('.gz', '')):
+        if os.path.isfile(item_list[0] + '.fa'):
             print '>>>>>>>>>> This Ref-file is already exists. continue next.'
             continue
         ret.append(item_list[1])
@@ -58,33 +71,51 @@ def grequests_async(dl_list, ref_list):
     rs = (grequests.get(url) for url in dl_list)
     for r in grequests.map(rs):
         print r.url + ' >>>>>>>>>><Response>' + str(r.status_code)
-
         out_listitem = next(itertools.ifilter(lambda x:x.find(str(r.url)) > -1, ref_list), None)
-        print out_listitem
-
-        file_name = str(r.url).split('/')[-1]
-        #out_dir = out_dname + '/' + out_listitem.split(',')[0]
+        file_name = out_listitem.split(',')[0] + '.fa'
         if os.path.isfile(out_dname + '/' + file_name):
-            print '%s is already exists.' % out_dname + '/' + file_name
+            print out_dname + '/' + file_name + ' is already exists.'
         else:
             print 'creat-file in ' + out_dname
-            f = open(file_name, 'w')
+            f = open(file_name + '.gz', 'w')
             f.write(r.content)
             f.close
 
 def unpack_files():
-    index_files = []
+    ref_files = []
     for file in print_tree(out_dname):
         root, ext = os.path.splitext(file)
         if ext == '.gz':
             subprocess.check_call(["gunzip","-fd",file])
             index_files.append(file)
         elif ext == '.fa':
-            index_files.append(file)
-            index_files = sorted(set(index_files), key=index_files.index)
-    return index_files
+            ref_files.append(file)
+            ref_files = sorted(set(ref_files), key=ref_files.index)
+    return ref_files
 
+def create_symbolic_link():
+    os.chdir(import_data_dir)
+    cmd_mksl = "ln -sf %s %s" % (out_dname, out_dname.split('/')[-1])
+    print cmd_mksl
+    subprocess.call(cmd_mksl.strip().split(" ")) 
+    return
 
+def set_inport_dir_value(section, key, value):    
+    ini = ConfigParser.SafeConfigParser()
+    if os.path.exists(ini_file):
+        ini.read(ini_file)
+    else:
+        sys.stderr.write('%s not found.' % ini_file)
+        sys.exit(1)
+
+    cmd_sed01 = "sed -i -e s/#library_import_dir/library_import_dir/"" %s" % ini_file
+    cmd_sed02 = "sed -i -e s,library_import_dir\(.*\),library_import_dir%s, %s" % ('=' + import_data_dir.replace('/','\/'), ini_file)
+    print cmd_sed01
+    subprocess.call(cmd_sed01.strip().split(" ")) 
+    print cmd_sed02
+    subprocess.call(cmd_sed02.strip().split(" ")) 
+
+    return
 
 def main():
     try:
@@ -113,12 +144,14 @@ def main():
         print '>>>>>>>>>>>>>>>>> unpacking transcritome files...'
         ref_files = []
         ref_files = unpack_files()
-        print 'Ref-files in current dir: ' + ref_files
 
+        print ':::::::::::::::::::::::::::::::::::::::::::'
+        print '>>>>>>>>>>>>>>>>> create symbolic link...'
+        create_symbolic_link()
 
-        # Load tool list
-        with open(tool_list_file, 'r') as f:
-            tl = yaml.load(f)
+        print ':::::::::::::::::::::::::::::::::::::::::::'
+        print '>>>>>>>>>>>>>>>>> edit universe_wsgi.ini...'
+        set_inport_dir_value('app:main','library_import_dir',import_data_dir)
 
     except:
         info = sys.exc_info()

@@ -1,0 +1,21 @@
+#!/bin/bash
+set -eux
+
+Soft="/usr/local/bin/seqtk"
+
+Input=REFNAME
+Output=OUTNAME
+Subsample=SUBVALUE
+
+if [ ! -f $Input'_1.fastq' ]; then
+    echo "$Input(_1.fastq) not found."
+    exit 1
+fi
+
+if [ ! -f $Input'_2.fastq' ]; then
+    echo "$Input(_2.fastq) not found."
+    exit 1
+fi
+
+$Soft sample -s100 $Input'_1.fastq' $Subsample > $Output'_1.fastq'
+$Soft sample -s100 $Input'_2.fastq' $Subsample > $Output'_2.fastq'
