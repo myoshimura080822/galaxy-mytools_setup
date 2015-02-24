@@ -87,7 +87,7 @@ def unpack_files():
         root, ext = os.path.splitext(file)
         if ext == '.gz':
             subprocess.check_call(["gunzip","-fd",file])
-            index_files.append(file)
+            ref_files.append(file)
         elif ext == '.fa':
             ref_files.append(file)
             ref_files = sorted(set(ref_files), key=ref_files.index)
