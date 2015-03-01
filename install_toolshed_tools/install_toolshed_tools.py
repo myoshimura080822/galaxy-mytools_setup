@@ -2,6 +2,7 @@
 import sys,traceback
 import os
 import yaml
+from ConfigParser import SafeConfigParser
 import datetime as dt
 import bioblend
 from bioblend.galaxy import GalaxyInstance
@@ -15,13 +16,22 @@ argvs = sys.argv
 argc = len(argvs)
 
 if (argc != 2):
-    print 'Usage: # python %s "<APY_KEY>"' % argvs[0]
+    print 'Usage: # python %s <galaxy username>' % argvs[0]
     quit()
 
-#============== Galaxy in 172.18.70.161 ================
+homedir = '/usr/local/' + argvs[1]
+dist_dname = homedir + '/galaxy-dist'
+
 GALAXY_URL = 'http://127.0.0.1:8080/'
-API_KEY = argvs[1]
-print API_KEY
+conf = SafeConfigParser()
+conf.read(dist_dname + '/universe_wsgi.ini')
+API_KEY = unicode(conf.get("app:main","master_api_key"))
+
+if (len(API_KEY) == 0):
+    print 'No setting galaxy MasterAPI_KEY.'
+    quit()
+else:
+    print 'API_KEY: ' + API_KEY
 
 def main():
     try:
@@ -60,7 +70,7 @@ def main():
                 r['revision'] = ts.repositories.get_ordered_installable_revisions(r['name'], r['owner'])[-1]
 
             start = dt.datetime.now()
-            print '\n(%s/%s) Installing tool %s from %s to section %s' % (counter, total_num_tools, r['name'], r['owner'], r['tool_panel_section_id'])
+            print '\n(%s/%s) Installing tool %s from %s to section %s (revision:%s depend-install:%s depend_repo_install:%s) ' % (counter, total_num_tools, r['name'], r['owner'], r['tool_panel_section_id'],r['revision'],r['install_tool_dependencies'],r['install_repository_dependencies'])
 
             try:
                 response = tsc.install_repository_revision(r['tool_shed_url'], r['name'], r['owner'], r['revision'], r['install_tool_dependencies'], r['install_repository_dependencies'], r['tool_panel_section_id'])
