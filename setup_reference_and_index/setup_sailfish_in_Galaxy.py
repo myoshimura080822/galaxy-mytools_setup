@@ -127,7 +127,7 @@ def make_param(path):
     else:
         return []
 
-def unpack_and_make_filelist():
+def unpack_and_make_filelist(idx_list):
     index_files = []
     for file in print_tree(out_dname):
         #print file
@@ -136,7 +136,11 @@ def unpack_and_make_filelist():
             subprocess.check_call(["gunzip","-fd",file])
             index_files.append(file)
         elif ext == '.fa':
-            index_files.append(file)
+            #print root.split('/')[-2]
+            listchk = next(itertools.ifilter(lambda x:x.find(root.split('/')[-2]) > -1, idx_list), None)
+            if listchk is not None:
+                index_files.append(file)
+    print index_files
     index_files = sorted(set(index_files), key=index_files.index)
     return index_files
 
@@ -200,7 +204,7 @@ def main():
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> unpacking and make-list sailfish index-files...'
         index_files = []
-        index_files = unpack_and_make_filelist()
+        index_files = unpack_and_make_filelist(input_index_list)
         print index_files
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
@@ -211,8 +215,12 @@ def main():
             param_list.remove([])
         if len(param_list) > 0:
             cmds = generate_cmds('sailfish index --force', ['-t', '-o', '--kmerSize'], param_list)
-            pool = Pool(mp.cpu_count())
-            callback = pool.map_async(run_cmd, cmds).get()
+            if mp.cpu_count() > 1:
+                pool = Pool(mp.cpu_count())
+                callback = pool.map_async(run_cmd, cmds).get()
+            else:
+                print 'cpu is single core.'
+                [ run_cmd(x) for x in cmds ]
         else:
             print 'sailfish indexes already created.'
 

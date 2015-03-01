@@ -94,6 +94,7 @@ def unpack_files():
     return ref_files
 
 def create_symbolic_link():
+    makeDir(import_data_dir)
     os.chdir(import_data_dir)
     cmd_mksl = "ln -sf %s %s" % (out_dname, out_dname.split('/')[-1])
     print cmd_mksl
