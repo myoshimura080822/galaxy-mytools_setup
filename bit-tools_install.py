@@ -19,6 +19,7 @@ if (argc != 2):
 homedir = '/usr/local/' + argvs[1]
 dist_dname = homedir + '/galaxy-dist'
 tool_dname = dist_dname + '/tools'
+venv_dir = '/.venv/bin/activate'
 
 def read_input():
     f = open(argvs[1])
@@ -53,10 +54,6 @@ def get_all_xml(directory):
 
 def main():
     try:
- #       input_tool_list = []
- #       input_tool_list = read_input()
- #       print 'length of tool_list: ' + str(len(input_tool_list))
-
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> clone BiT Tools from github...'
         if not os.path.isfile(tool_dname + '/galaxy-mytools_rnaseq/Sailfish_custom/Sailfish_custom.xml'):
@@ -65,7 +62,7 @@ def main():
             Repo.clone_from(git_url, 'galaxy-mytools_rnaseq')
         else:
             print 'BiT Tools already cloned. To update, Please delete, move or rename "/galaxy-mytools_rnaseq" before script execute.'
-            return 0
+            #return 0
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> add BiT tool-node to tool_conf.xml...'
@@ -85,6 +82,13 @@ def main():
         print xml_list
         add_tool_conf(tool_tree, xml_list)
         
+        if os.path.isdir(dist_dname + venv_dir):
+            print '>>>>>>>>>>>>>>>>> pip module install in venv...'
+            os.chdir(dist_dname)
+            retval = subprocess.check_call(['source', dist_dname + venv_dir])
+            print retval
+            subprocess.check_call(['pip', 'list'])
+
         print '>>>>>>>>>>>>>>>>> restart galaxy service...'
         subprocess.check_call(["service","galaxy","restart"])
 
