@@ -12,11 +12,11 @@ print 'bit-workflow_install.py Started......'
 argvs = sys.argv
 argc = len(argvs)
 
-if (argc != 2):
-    print 'Usage: # python %s galaxy-username' % argvs[0]
+if (argc != 3):
+    print 'Usage: # python %s USER_API_KEY galaxy-username' % argvs[0]
     quit()
 
-homedir = '/usr/local/' + argvs[1]
+homedir = '/usr/local/' + argvs[2]
 dist_dname = homedir + '/galaxy-dist'
 wf_dname = dist_dname + '/workflow_file'
 
@@ -24,7 +24,7 @@ GALAXY_URL = 'http://127.0.0.1:8080/'
 conf = SafeConfigParser()
 conf.read(dist_dname + '/universe_wsgi.ini')
 #API_KEY = unicode(conf.get("app:main","master_api_key"))
-API_KEY='12913befc8b305416b7a2939b14f84ef'
+API_KEY=str(argvs[1])
 if (len(API_KEY) == 0):
     print 'No setting galaxy MasterAPI_KEY.'
     quit()
