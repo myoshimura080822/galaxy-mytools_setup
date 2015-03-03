@@ -4,6 +4,8 @@ import os
 import ConfigParser
 from git import Repo
 from xml.etree import ElementTree as ET
+import subprocess
+from subprocess import check_call
 
 print 'install_bit-tools.py Started......'
 
@@ -82,6 +84,9 @@ def main():
                 print '%s tool node already created.' % e.get('file')
         print xml_list
         add_tool_conf(tool_tree, xml_list)
+        
+        print '>>>>>>>>>>>>>>>>> restart galaxy service...'
+        subprocess.check_call(["service","galaxy","restart"])
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> script ended :)'

@@ -2,6 +2,7 @@
 import sys, traceback
 import os
 from git import Repo
+from ConfigParser import SafeConfigParser
 import bioblend
 from bioblend.galaxy import GalaxyInstance
 from bioblend.galaxy.workflows import WorkflowClient
@@ -11,17 +12,24 @@ print 'bit-workflow_install.py Started......'
 argvs = sys.argv
 argc = len(argvs)
 
-if (argc != 3):
-    print 'Usage: # python %s "<APY_KEY>" galaxy-username' % argvs[0]
+if (argc != 2):
+    print 'Usage: # python %s galaxy-username' % argvs[0]
     quit()
 
-GALAXY_URL = 'http://127.0.0.1:8080/'
-API_KEY = argvs[1]
-print API_KEY
-
-homedir = '/usr/local/' + argvs[2]
+homedir = '/usr/local/' + argvs[1]
 dist_dname = homedir + '/galaxy-dist'
 wf_dname = dist_dname + '/workflow_file'
+
+GALAXY_URL = 'http://127.0.0.1:8080/'
+conf = SafeConfigParser()
+conf.read(dist_dname + '/universe_wsgi.ini')
+#API_KEY = unicode(conf.get("app:main","master_api_key"))
+API_KEY='12913befc8b305416b7a2939b14f84ef'
+if (len(API_KEY) == 0):
+    print 'No setting galaxy MasterAPI_KEY.'
+    quit()
+else:
+    print 'API_KEY: ' + API_KEY
 
 def get_all_ga(directory):
     ret = []
@@ -52,7 +60,7 @@ def main():
         wf_namelist = [x['name'] for x in dataset if x['deleted'] == False]
         print wf_namelist
         print ':::::::::::::::::::::::::::::::::::::::::::'
-        print '>>>>>>>>>>>>>>>>> clone BiT Tools from github...'
+        print '>>>>>>>>>>>>>>>>> clone BiT Workflows from github...'
         if not os.path.exists(wf_dname + '/galaxy-workflow_rnaseq'):
             makeDir(wf_dname)
             os.chdir(wf_dname)
