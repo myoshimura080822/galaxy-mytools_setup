@@ -8,7 +8,6 @@ import subprocess
 from subprocess import check_call
 
 print 'install_bit-tools.py Started......'
-
 argvs = sys.argv
 argc = len(argvs)
 
@@ -16,10 +15,11 @@ if (argc != 2):
     print 'Usage: # python %s galaxy-username' % argvs[0]
     quit()
 
+script_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 homedir = '/usr/local/' + argvs[1]
 dist_dname = homedir + '/galaxy-dist'
 tool_dname = dist_dname + '/tools'
-venv_dir = '/.venv/bin/activate'
+venv_activate = '.venv/bin/activate'
 
 def read_input():
     f = open(argvs[1])
@@ -82,12 +82,21 @@ def main():
         print xml_list
         add_tool_conf(tool_tree, xml_list)
         
-        if os.path.isdir(dist_dname + venv_dir):
+        if os.path.isfile(dist_dname + '/' + venv_activate):
             print '>>>>>>>>>>>>>>>>> pip module install in venv...'
-            os.chdir(dist_dname)
-            retval = subprocess.check_call(['source', dist_dname + venv_dir])
-            print retval
-            subprocess.check_call(['pip', 'list'])
+            cmd = '/bin/bash  ' + script_dir + '/pip_install_venv.sh ' + dist_dname + '/' + venv_activate
+            print "start better_impl %s" % cmd
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print "waiting"
+            stdout_data, stderr_data = p.communicate()
+            print "finish: %d %d" % (len(stdout_data), len(stderr_data))
+            print p.returncode
+            print stdout_data
+            print stderr_data 
+            
+            #retval = subprocess.check_call(['.', '.' + venv_activate])
+            os.system('/bin/bash  --rcfile ' + os.path.abspath(os.path.dirname(__file__)) + '/pip_install_venv.sh ' + dist_dname + '/' + venv_activate)
+            #subprocess.check_call(['pip', 'list'])
 
         print '>>>>>>>>>>>>>>>>> restart galaxy service...'
         subprocess.check_call(["service","galaxy","restart"])
