@@ -11,9 +11,6 @@
 #   tool_panel_section_id: peak_calling
 #   tool_shed_url: http://testtoolshed.g2.bx.psu.edu
 
-api_key: 89adc190acb206b4544cef3d427e3351
-galaxy_instance: 172.18.70.161
-
 tools:
 - name: tophat2
   owner: devteam

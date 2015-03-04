@@ -4,9 +4,10 @@ import os
 import ConfigParser
 from git import Repo
 from xml.etree import ElementTree as ET
+import subprocess
+from subprocess import check_call
 
 print 'install_bit-tools.py Started......'
-
 argvs = sys.argv
 argc = len(argvs)
 
@@ -14,9 +15,11 @@ if (argc != 2):
     print 'Usage: # python %s galaxy-username' % argvs[0]
     quit()
 
+script_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 homedir = '/usr/local/' + argvs[1]
 dist_dname = homedir + '/galaxy-dist'
 tool_dname = dist_dname + '/tools'
+venv_activate = '.venv/bin/activate'
 
 def read_input():
     f = open(argvs[1])
@@ -51,10 +54,6 @@ def get_all_xml(directory):
 
 def main():
     try:
- #       input_tool_list = []
- #       input_tool_list = read_input()
- #       print 'length of tool_list: ' + str(len(input_tool_list))
-
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> clone BiT Tools from github...'
         if not os.path.isfile(tool_dname + '/galaxy-mytools_rnaseq/Sailfish_custom/Sailfish_custom.xml'):
@@ -63,7 +62,7 @@ def main():
             Repo.clone_from(git_url, 'galaxy-mytools_rnaseq')
         else:
             print 'BiT Tools already cloned. To update, Please delete, move or rename "/galaxy-mytools_rnaseq" before script execute.'
-            return 0
+            #return 0
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> add BiT tool-node to tool_conf.xml...'
@@ -82,6 +81,25 @@ def main():
                 print '%s tool node already created.' % e.get('file')
         print xml_list
         add_tool_conf(tool_tree, xml_list)
+        
+        if os.path.isfile(dist_dname + '/' + venv_activate):
+            print '>>>>>>>>>>>>>>>>> pip module install in venv...'
+            cmd = '/bin/bash  ' + script_dir + '/pip_install_venv.sh ' + dist_dname + '/' + venv_activate
+            print "start better_impl %s" % cmd
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print "waiting"
+            stdout_data, stderr_data = p.communicate()
+            print "finish: %d %d" % (len(stdout_data), len(stderr_data))
+            print p.returncode
+            print stdout_data
+            print stderr_data 
+            
+            #retval = subprocess.check_call(['.', '.' + venv_activate])
+            os.system('/bin/bash  --rcfile ' + os.path.abspath(os.path.dirname(__file__)) + '/pip_install_venv.sh ' + dist_dname + '/' + venv_activate)
+            #subprocess.check_call(['pip', 'list'])
+
+        print '>>>>>>>>>>>>>>>>> restart galaxy service...'
+        subprocess.check_call(["service","galaxy","restart"])
 
         print ':::::::::::::::::::::::::::::::::::::::::::'
         print '>>>>>>>>>>>>>>>>> script ended :)'

@@ -1,0 +1,1 @@
+mm10_refMrna,http://hgdownload.cse.ucsc.edu/goldenPath/mm10/bigZips/refMrna.fa.gz,mouse/UCSC Dec.2011 (mm10)

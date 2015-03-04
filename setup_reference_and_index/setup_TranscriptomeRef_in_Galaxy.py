@@ -87,13 +87,14 @@ def unpack_files():
         root, ext = os.path.splitext(file)
         if ext == '.gz':
             subprocess.check_call(["gunzip","-fd",file])
-            index_files.append(file)
+            ref_files.append(file)
         elif ext == '.fa':
             ref_files.append(file)
             ref_files = sorted(set(ref_files), key=ref_files.index)
     return ref_files
 
 def create_symbolic_link():
+    makeDir(import_data_dir)
     os.chdir(import_data_dir)
     cmd_mksl = "ln -sf %s %s" % (out_dname, out_dname.split('/')[-1])
     print cmd_mksl
@@ -109,7 +110,7 @@ def set_inport_dir_value(section, key, value):
         sys.exit(1)
 
     cmd_sed01 = "sed -i -e s/#library_import_dir/library_import_dir/"" %s" % ini_file
-    cmd_sed02 = "sed -i -e s,library_import_dir\(.*\),library_import_dir%s, %s" % ('=' + import_data_dir.replace('/','\/'), ini_file)
+    cmd_sed02 = "sed -i -e s,^library_import_dir\(.*\),library_import_dir%s, %s" % ('=' + import_data_dir.replace('/','\/'), ini_file)
     print cmd_sed01
     subprocess.call(cmd_sed01.strip().split(" ")) 
     print cmd_sed02
