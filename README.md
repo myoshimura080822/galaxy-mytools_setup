@@ -55,7 +55,7 @@ Setup ENV for Execute BiT-Workflow (RNA seq + DEG)
 
 - use: `python bit-tools_install.py <galaxy username(admin)>`
 
-*4. bit-workflow_install.py*  
+###*5. bit-workflow_install.py*  
 
 - clone, install and setting BiT custom-WFs.
 
